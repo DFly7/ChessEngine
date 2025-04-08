@@ -1,2 +1,5 @@
 third_party/
 .DS_Store
+
+# Build directories
+build/
