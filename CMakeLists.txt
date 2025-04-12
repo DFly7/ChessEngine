@@ -13,6 +13,12 @@ set(SOURCE_FILES
     src/GUIStuff/RenderData.cpp
     src/GUIStuff/TextureManager.cpp
     src/GUIStuff/View.cpp
+    
+    src/UCIInterface.cpp
+    src/MoveGenerator.cpp
+    src/Evaluation.cpp
+    src/Search.cpp
+    src/Board.cpp
 )
 
 # Create executable first
