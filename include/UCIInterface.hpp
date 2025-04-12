@@ -16,7 +16,9 @@ public:
     ~UCIInterface();
 
     void run();
-    void handleCommand(const std::string &command);
+    void handleCommand(const std::string &command_full);
+
+    void printMove(const Move &move);
 };
 
 #endif /* UCIINTERFACE_HPP */

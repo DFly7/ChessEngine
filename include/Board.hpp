@@ -33,14 +33,17 @@ public:
     uint64_t BlackQueen = 0ULL;
     uint64_t BlackKing = 0ULL;
 
-    int player;
-    int enPassant;
+    int player = 0;
+    int enPassant = 0;
 
     Board();
     ~Board();
+    void clearBoard();
     void setBitBoard(const std::string &fen);
-    void makeMove(const Move &move);
-    void undoMove(const Move &move);
+    void makeMove(Move &move);
+    void undoMove(Move &move);
+    void printBitBoards();
+    uint64_t &getBitBoard(char pieceType);
 };
 
 #endif /* BOARD_HPP */
