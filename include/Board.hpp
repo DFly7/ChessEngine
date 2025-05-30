@@ -34,7 +34,7 @@ public:
     uint64_t BlackKing = 0ULL;
 
     int player = 0;
-    int enPassant = 0;
+    std::string enPassant = "-";
 
     Board();
     ~Board();

@@ -29,7 +29,7 @@ public:
     uint64_t BlackKing;
 
     int player;
-    int enPassant;
+    std::string enPassant;
 
     MoveGenerator();
     ~MoveGenerator();

@@ -29,12 +29,46 @@ void Board::setBitBoard(const std::string &fen_full)
 
     this->player = (player == "w") ? 1 : 2;
 
-    std::cout << "FEN part: " << fen << std::endl;
+    for (int i = 0; i < castling.length(); i++)
+    {
+        if (castling[i] == 'K')
+        {
+            castlingRights = castlingRights | 0b00000001;
+        }
+        else if (castling[i] == 'Q')
+        {
+            castlingRights = castlingRights | 0b00000010;
+        }
+        else if (castling[i] == 'k')
+        {
+            castlingRights = castlingRights | 0b00000100;
+        }
+        else if (castling[i] == 'q')
+        {
+            castlingRights = castlingRights | 0b00001000;
+        }
+    }
 
-    std::cout << "FEN full: " << fen_full << std::endl;
+    if (enPassant != "-")
+    {
+        this->enPassant = enPassant;
+    }
 
+    std::string cr_str_display = "";
+    if (this->castlingRights & 0b00000001)
+        cr_str_display += 'K';
+    if (this->castlingRights & 0b00000010)
+        cr_str_display += 'Q';
+    if (this->castlingRights & 0b00000100)
+        cr_str_display += 'k';
+    if (this->castlingRights & 0b00001000)
+        cr_str_display += 'q';
+    if (cr_str_display.empty())
+    {
+        cr_str_display = "-";
+    }
+    std::cout << "Castling Rights: " << cr_str_display << std::endl;
     std::cout << "Player: " << player << std::endl;
-    std::cout << "Castling: " << castling << std::endl;
     std::cout << "En Passant: " << enPassant << std::endl;
 
     int row = 7;
@@ -139,7 +173,8 @@ void Board::clearBoard()
     BlackPieces = 0ULL;
 
     player = 0;
-    enPassant = 0;
+    castlingRights = 0b00000000;
+    enPassant = "-";
 }
 
 void Board::makeMove(Move &move)

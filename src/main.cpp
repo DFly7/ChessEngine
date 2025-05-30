@@ -172,10 +172,9 @@ void runGuiMode()
     }
 
     std::cout << "Hello, World!\n";
-    std::string start = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+    std::string start = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -";
     board.setBitBoard(start);
 
-    board.player = 1;
     RenderData renderData;
     renderData.populateRenderData(board);
 
@@ -227,7 +226,7 @@ void runGuiMode()
         }
 
         view.render(renderData);
-        SDL_Delay(100);
+        SDL_Delay(10);
     }
 }
 
