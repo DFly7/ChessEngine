@@ -10,12 +10,15 @@
 
 #include <stdio.h>
 #include <vector>
+#include "Board.hpp"
 
-struct RenderData{
+struct RenderData
+{
     std::vector<int> pieceXPositions; // x-coordinates of each piece
     std::vector<int> pieceYPositions; // y-coordinates of each piece
     std::vector<char> pieceTypes;     // Types of each piece (e.g., 'P', 'N', 'B', 'R', 'Q', 'K')
-};
 
+    void populateRenderData(const Board &board);
+};
 
 #endif /* RenderData_hpp */

@@ -3,7 +3,7 @@
 #include "../include/MoveGenerator.hpp"
 #include <limits>
 #include <iostream>
-Search::Search() : maxDepth(5), moveGenerator(), evaluation()
+Search::Search() : maxDepth(4), moveGenerator(), evaluation()
 {
 }
 
@@ -31,7 +31,7 @@ Move Search::search(Board &board)
     {
         board.makeMove(move);
         // Start minimax with the opposite player
-        int score = minimax(board, maxDepth - 1, !isWhite,
+        int score = minimax(board, maxDepth, !isWhite,
                             std::numeric_limits<int>::min(),
                             std::numeric_limits<int>::max());
         board.undoMove(move);
