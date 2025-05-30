@@ -80,9 +80,11 @@ char getPieceletter(int index, Board &board)
     }
 }
 
-bool validatePlayerMove(int player, Move m, MoveGenerator &moveGenerator)
+bool validatePlayerMove(int player, Move m, MoveGenerator &moveGenerator, Board &board)
 {
     std::vector<Move> legalMoves;
+
+    moveGenerator.updateBoardReferences(board);
 
     //    printf("piece name %c", m.pieceName);
 
@@ -99,6 +101,7 @@ bool validatePlayerMove(int player, Move m, MoveGenerator &moveGenerator)
     {
     case 'P':
         legalMoves = moveGenerator.GenerateWhitePawnMoves();
+        std::cout << "Legal Moves: " << legalMoves.size() << std::endl;
         break;
     case 'N':
         legalMoves = moveGenerator.GenerateKnightMoves(1);
@@ -172,6 +175,7 @@ void runGuiMode()
     std::string start = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
     board.setBitBoard(start);
 
+    board.player = 1;
     RenderData renderData;
     renderData.populateRenderData(board);
 
@@ -189,7 +193,6 @@ void runGuiMode()
             else
             {
                 std::pair<int, int> movePair = view.handleEvents(e);
-                view.render(renderData);
 
                 if (movePair.first >= 0)
                 {
@@ -197,46 +200,32 @@ void runGuiMode()
                     char letter = getPieceletter(movePair.first, board);
                     if (letter != '\0')
                     {
-                        if ((letter == 'k' or letter == 'K') and (abs(movePair.first % 8 - movePair.second % 8) == 2) and (movePair.first / 8 == movePair.second / 8))
-                        {
-                            int way = (movePair.first % 8 - movePair.second % 8 == 2) ? 2 : 1;
-                            m = {letter, '\0', way, movePair.first / 8, movePair.first % 8, movePair.second / 8, movePair.second % 8};
-                        }
-                        else
-                        {
-                            m = {letter, '\0', 0, movePair.first / 8, movePair.first % 8, movePair.second / 8, movePair.second % 8};
-                        }
+                        m = {letter, '\0', 0, movePair.first / 8, movePair.first % 8, movePair.second / 8, movePair.second % 8};
 
                         std::cout << "Move: " << m.pieceName << " from " << m.startR << "," << m.startC << " to " << m.endR << "," << m.endC << std::endl;
 
-                        board.makeMove(m);
-                        renderData.populateRenderData(board);
+                        if (validatePlayerMove(board.player, m, moveGenerator, board))
+                        {
+                            board.makeMove(m);
+                            renderData.populateRenderData(board);
 
-                        view.render(renderData);
-                        // moveGenerator.updateBoardReferences(board);
-                        // if (validatePlayerMove(board.player, m, moveGenerator))
-                        // {
-                        //     board.makeMove(m);
-                        //     renderData.populateRenderData(board);
-                        //     board.player = (board.player == 1) ? 2 : 1;
-                        //     view.render(renderData);
-                        // }
+                            view.render(renderData);
+                        }
                     }
                 }
             }
         }
 
-        // if (player == 2)
-        // {
-        //     Move m = b.AImove();
-        //     b.makeMove(m);
-        //     b.printMove(m);
-        //     data = b.populateRenderData();
-        //     player = (player == 1) ? 2 : 1;
-        //     view.render(data);
-        // }
+        if (board.player == 2)
+        {
+            Move m = searcher.search(board);
+            std::cout << "AI Move: " << m.pieceName << " from " << m.startR << "," << m.startC << " to " << m.endR << "," << m.endC << std::endl;
 
-        // i++;
+            board.makeMove(m);
+            renderData.populateRenderData(board);
+            view.render(renderData);
+        }
+
         view.render(renderData);
         SDL_Delay(100);
     }

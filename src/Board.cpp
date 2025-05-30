@@ -263,6 +263,8 @@ void Board::makeMove(Move &move)
     BlackPieces = BlackKing | BlackRook | BlackPawns | BlackQueen | BlackBishop | BlackKnight;
     WhitePieces = WhiteKing | WhiteRook | WhitePawns | WhiteQueen | WhiteBishop | WhiteKnight;
     AllPieces = BlackPieces | WhitePieces;
+
+    player = (player == 1) ? 2 : 1;
 }
 
 uint64_t &Board::getBitBoard(char pieceType)
@@ -394,6 +396,8 @@ void Board::undoMove(Move &move)
     BlackPieces = BlackKing | BlackRook | BlackPawns | BlackQueen | BlackBishop | BlackKnight;
     WhitePieces = WhiteKing | WhiteRook | WhitePawns | WhiteQueen | WhiteBishop | WhiteKnight;
     AllPieces = BlackPieces | WhitePieces;
+
+    player = (player == 1) ? 2 : 1;
 }
 
 void Board::printBitBoards()

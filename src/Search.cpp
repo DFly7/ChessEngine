@@ -42,12 +42,6 @@ Move Search::search(Board &board)
             bestScore = score;
             bestMove = move;
         }
-
-        // Shortcut for castling (optional - remove if not needed)
-        if (move.castling == 2)
-        {
-            return move;
-        }
     }
 
     return bestMove;
