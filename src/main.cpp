@@ -1,6 +1,5 @@
 #include "UCIInterface.hpp"
 #include <string>
-#include "BitBoards.hpp"
 #include "View.hpp"
 #include <utility>
 #include "Board.hpp"

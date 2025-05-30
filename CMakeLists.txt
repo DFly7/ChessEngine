@@ -8,7 +8,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Source files
 set(SOURCE_FILES
     src/main.cpp
-    src/BitBoards.cpp
     src/Move.cpp
     src/GUIStuff/RenderData.cpp
     src/GUIStuff/TextureManager.cpp
