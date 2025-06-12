@@ -79,7 +79,7 @@ char getPieceletter(int index, Board &board)
     }
 }
 
-bool validatePlayerMove(int player, Move m, MoveGenerator &moveGenerator, Board &board)
+Move validatePlayerMove(int player, Move m, MoveGenerator &moveGenerator, Board &board)
 {
     std::vector<Move> legalMoves;
 
@@ -89,18 +89,17 @@ bool validatePlayerMove(int player, Move m, MoveGenerator &moveGenerator, Board 
 
     if (islower(m.pieceName) and player != 2)
     {
-        return false;
+        return Move();
     }
     if (isupper(m.pieceName) and player != 1)
     {
-        return false;
+        return Move();
     }
 
     switch (m.pieceName)
     {
     case 'P':
         legalMoves = moveGenerator.GenerateWhitePawnMoves();
-        std::cout << "Legal Moves: " << legalMoves.size() << std::endl;
         break;
     case 'N':
         legalMoves = moveGenerator.GenerateKnightMoves(1);
@@ -142,10 +141,10 @@ bool validatePlayerMove(int player, Move m, MoveGenerator &moveGenerator, Board 
     {
         if (m2.endR == m.endR and m2.endC == m.endC and m.startC == m2.startC and m.startR == m2.startR)
         {
-            return true;
+            return m2;
         }
     }
-    return false;
+    return Move();
 }
 
 // Function to run GUI mode (contains your old game loop, adapted)
@@ -171,7 +170,7 @@ void runGuiMode()
     }
 
     std::cout << "Hello, World!\n";
-    std::string start = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -";
+    std::string start = "rnbqkbnr/pppp1ppp/8/3Pp3/8/8/PPPPP1PP/RNBQKBNR w KQkq e6";
     board.setBitBoard(start);
 
     RenderData renderData;
@@ -200,11 +199,12 @@ void runGuiMode()
                     {
                         m = {letter, '\0', 0, movePair.first / 8, movePair.first % 8, movePair.second / 8, movePair.second % 8};
 
-                        std::cout << "Move: " << m.pieceName << " from " << m.startR << "," << m.startC << " to " << m.endR << "," << m.endC << std::endl;
+                        Move validatedMove = validatePlayerMove(board.player, m, moveGenerator, board);
+                        std::cout << "Validated Move: " << validatedMove.pieceName << " from " << validatedMove.startR << "," << validatedMove.startC << " to " << validatedMove.endR << "," << validatedMove.endC << " " << validatedMove.enPassantMove << std::endl;
 
-                        if (validatePlayerMove(board.player, m, moveGenerator, board))
+                        if (validatedMove.pieceName != '\0')
                         {
-                            board.makeMove(m);
+                            board.makeMove(validatedMove);
                             renderData.populateRenderData(board);
 
                             view.render(renderData);
@@ -214,18 +214,18 @@ void runGuiMode()
             }
         }
 
-        if (board.player == 2)
-        {
-            Move m = searcher.search(board);
-            std::cout << "AI Move: " << m.pieceName << " from " << m.startR << "," << m.startC << " to " << m.endR << "," << m.endC << std::endl;
+        // if (board.player == 2)
+        // {
+        //     Move m = searcher.search(board);
+        //     std::cout << "AI Move: " << m.pieceName << " from " << m.startR << "," << m.startC << " to " << m.endR << "," << m.endC << std::endl;
 
-            board.makeMove(m);
-            renderData.populateRenderData(board);
-            view.render(renderData);
-        }
+        //     board.makeMove(m);
+        //     renderData.populateRenderData(board);
+        //     view.render(renderData);
+        // }
 
         view.render(renderData);
-        SDL_Delay(10);
+        SDL_Delay(100);
     }
 }
 

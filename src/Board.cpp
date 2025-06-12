@@ -179,6 +179,7 @@ void Board::clearBoard()
 
 void Board::makeMove(Move &move)
 {
+
     uint64_t attackSquare = 1ULL << (move.endR * 8 + move.endC);
 
     uint64_t StartSquare = 1ULL << (move.startR * 8 + move.startC);
@@ -268,6 +269,25 @@ void Board::makeMove(Move &move)
         move.capture = 'K';
     }
 
+    if (move.enPassantMove)
+    {
+        std::cout << "En Passant Move: " << move.enPassantMove << std::endl;
+        if (move.pieceName == 'P')
+        {
+            uint64_t belowSquare = attackSquare >> 8; // Square directly below
+
+            BlackPawns = BlackPawns ^ belowSquare;
+            move.capture = 'p';
+        }
+        else if (move.pieceName == 'p')
+        {
+            uint64_t aboveSquare = attackSquare << 8; // Square directly above
+
+            WhitePawns = WhitePawns ^ aboveSquare;
+            move.capture = 'P';
+        }
+    }
+
     uint64_t &sourceBitBoard = getBitBoard(move.pieceName);
 
     sourceBitBoard = sourceBitBoard ^ StartSquare;
@@ -298,6 +318,19 @@ void Board::makeMove(Move &move)
     BlackPieces = BlackKing | BlackRook | BlackPawns | BlackQueen | BlackBishop | BlackKnight;
     WhitePieces = WhiteKing | WhiteRook | WhitePawns | WhiteQueen | WhiteBishop | WhiteKnight;
     AllPieces = BlackPieces | WhitePieces;
+
+    // if (move.pieceName == 'P' and (move.endR - move.startR == 2))
+    // {
+    //     std::string enPassantString = move.endC + move.endR;
+    // }
+    // else if (move.pieceName == 'p' and (move.startR - move.endR == 2))
+    // {
+    //     enPassant = move.endC + move.endR;
+    // }
+    // else
+    // {
+    //     enPassant = "-";
+    // }
 
     player = (player == 1) ? 2 : 1;
 }

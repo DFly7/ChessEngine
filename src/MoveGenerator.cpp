@@ -1,5 +1,6 @@
 #include "../include/MoveGenerator.hpp"
 #include "../include/Board.hpp"
+#include <iostream>
 
 MoveGenerator::MoveGenerator()
 {
@@ -7,6 +8,21 @@ MoveGenerator::MoveGenerator()
 
 MoveGenerator::~MoveGenerator()
 {
+}
+
+bool MoveGenerator::isKingInCheck()
+{
+    return false;
+}
+
+bool MoveGenerator::isKingInCheckmate()
+{
+    return false;
+}
+
+bool MoveGenerator::isKingInStalemate()
+{
+    return false;
 }
 
 // Update internal state
@@ -81,10 +97,70 @@ std::vector<Move> MoveGenerator::GenerateWhitePawnMoves()
     uint64_t takeRight = 0ULL;
     uint64_t takeLeft = 0ULL;
 
-    int index = __builtin_ctzll(pawn);
-    //    printf("I after buildtin %d", index);
+    int enPassantC = 0;
+    int enPassantR = 0;
 
-    //    printBitboard(pawn);
+    if (enPassant != "-")
+    {
+
+        switch (enPassant[0])
+        {
+        case 'a':
+            enPassantC = 0;
+            break;
+        case 'b':
+            enPassantC = 1;
+            break;
+        case 'c':
+            enPassantC = 2;
+            break;
+        case 'd':
+            enPassantC = 3;
+            break;
+        case 'e':
+            enPassantC = 4;
+            break;
+        case 'f':
+            enPassantC = 5;
+            break;
+        case 'g':
+            enPassantC = 6;
+            break;
+        case 'h':
+            enPassantC = 7;
+            break;
+        }
+
+        switch (enPassant[1])
+        {
+        case '1':
+            enPassantR = 0;
+            break;
+        case '2':
+            enPassantR = 1;
+            break;
+        case '3':
+            enPassantR = 2;
+            break;
+        case '4':
+            enPassantR = 3;
+            break;
+        case '5':
+            enPassantR = 4;
+            break;
+        case '6':
+            enPassantR = 5;
+            break;
+        case '7':
+            enPassantR = 6;
+            break;
+        case '8':
+            enPassantR = 7;
+            break;
+        }
+    }
+
+    int index = __builtin_ctzll(pawn);
 
     for (int i = index; i < 64; i++)
     {
@@ -131,6 +207,10 @@ std::vector<Move> MoveGenerator::GenerateWhitePawnMoves()
             {
                 legalMoves.push_back(Move('P', 'Y', 0, i / 8, i % 8, (i / 8) + 1, (i % 8) + 1));
             }
+            else if (enPassantR == (i / 8) + 1 and enPassantC == (i % 8) + 1)
+            {
+                legalMoves.push_back(Move('P', 'Y', 0, i / 8, i % 8, (i / 8) + 1, (i % 8) + 1, true));
+            }
         }
 
         if ((i % 8) != 0)
@@ -140,6 +220,10 @@ std::vector<Move> MoveGenerator::GenerateWhitePawnMoves()
             if (takeLeft & BlackPieces)
             {
                 legalMoves.push_back(Move('P', 'Y', 0, i / 8, i % 8, (i / 8) + 1, (i % 8) - 1));
+            }
+            else if (enPassantR == (i / 8) + 1 and enPassantC == (i % 8) - 1)
+            {
+                legalMoves.push_back(Move('P', 'Y', 0, i / 8, i % 8, (i / 8) + 1, (i % 8) - 1, true));
             }
         }
         pawn &= pawn - 1;

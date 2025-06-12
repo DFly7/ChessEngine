@@ -36,6 +36,10 @@ public:
     std::vector<Move> generateMoves(const Board &board);
     void updateBoardReferences(const Board &board);
 
+    bool isKingInCheck();
+    bool isKingInCheckmate();
+    bool isKingInStalemate();
+
     std::vector<Move> GenerateWhitePawnMoves();
     std::vector<Move> GenerateBlackPawnMoves();
 
