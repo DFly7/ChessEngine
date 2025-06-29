@@ -3,6 +3,8 @@
 #include <sstream>
 #include <cctype>
 #include "../include/Move.hpp"
+#include "ChessUtils.hpp"
+
 Board::Board()
 {
 }
@@ -319,18 +321,37 @@ void Board::makeMove(Move &move)
     WhitePieces = WhiteKing | WhiteRook | WhitePawns | WhiteQueen | WhiteBishop | WhiteKnight;
     AllPieces = BlackPieces | WhitePieces;
 
-    // if (move.pieceName == 'P' and (move.endR - move.startR == 2))
-    // {
-    //     std::string enPassantString = move.endC + move.endR;
-    // }
-    // else if (move.pieceName == 'p' and (move.startR - move.endR == 2))
-    // {
-    //     enPassant = move.endC + move.endR;
-    // }
-    // else
-    // {
-    //     enPassant = "-";
-    // }
+    std::string enPassantString;
+    if (move.pieceName == 'P' and (move.endR - move.startR == 2))
+    {
+        enPassantString = ChessUtils::coordsToSquare(move.endR - 1, move.endC); // "e4"
+
+        // Convert chess notation to internal coordinates
+        auto [row, col] = ChessUtils::squareToCoords(enPassantString); // row=3, col=4
+
+        std::cout << "Enpassant String: " << enPassantString << std::endl;
+        std::cout << "Row: " << row << std::endl;
+        std::cout << "Col: " << col << std::endl;
+    }
+    else if (move.pieceName == 'p' and (move.startR - move.endR == 2))
+    {
+        enPassantString = ChessUtils::coordsToSquare(move.endR + 1, move.endC); // "e4"
+
+        // Convert chess notation to internal coordinates
+        auto [row, col] = ChessUtils::squareToCoords(enPassantString); // row=3, col=4
+
+        std::cout << "Enpassant String: " << enPassantString << std::endl;
+        std::cout << "Row: " << row << std::endl;
+        std::cout << "Col: " << col << std::endl;
+    }
+    else
+    {
+        enPassantString = "-";
+    }
+
+    this->enPassant = enPassantString;
+
+    std::cout << "En Passant: " << enPassantString << std::endl;
 
     player = (player == 1) ? 2 : 1;
 }

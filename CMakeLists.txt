@@ -18,6 +18,7 @@ set(SOURCE_FILES
     src/Evaluation.cpp
     src/Search.cpp
     src/Board.cpp
+    src/ChessUtils.cpp
 )
 
 # Create executable first

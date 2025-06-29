@@ -1,6 +1,7 @@
 #include "../include/MoveGenerator.hpp"
 #include "../include/Board.hpp"
 #include <iostream>
+#include "../include/ChessUtils.hpp"
 
 MoveGenerator::MoveGenerator()
 {
@@ -102,62 +103,9 @@ std::vector<Move> MoveGenerator::GenerateWhitePawnMoves()
 
     if (enPassant != "-")
     {
-
-        switch (enPassant[0])
-        {
-        case 'a':
-            enPassantC = 0;
-            break;
-        case 'b':
-            enPassantC = 1;
-            break;
-        case 'c':
-            enPassantC = 2;
-            break;
-        case 'd':
-            enPassantC = 3;
-            break;
-        case 'e':
-            enPassantC = 4;
-            break;
-        case 'f':
-            enPassantC = 5;
-            break;
-        case 'g':
-            enPassantC = 6;
-            break;
-        case 'h':
-            enPassantC = 7;
-            break;
-        }
-
-        switch (enPassant[1])
-        {
-        case '1':
-            enPassantR = 0;
-            break;
-        case '2':
-            enPassantR = 1;
-            break;
-        case '3':
-            enPassantR = 2;
-            break;
-        case '4':
-            enPassantR = 3;
-            break;
-        case '5':
-            enPassantR = 4;
-            break;
-        case '6':
-            enPassantR = 5;
-            break;
-        case '7':
-            enPassantR = 6;
-            break;
-        case '8':
-            enPassantR = 7;
-            break;
-        }
+        auto [row, col] = ChessUtils::squareToCoords(enPassant);
+        enPassantR = row;
+        enPassantC = col;
     }
 
     int index = __builtin_ctzll(pawn);
@@ -244,6 +192,17 @@ std::vector<Move> MoveGenerator::GenerateBlackPawnMoves()
     uint64_t takeRight = 0ULL;
     uint64_t takeLeft = 0ULL;
 
+    int enPassantC = 0;
+    int enPassantR = 0;
+
+    if (enPassant != "-")
+    {
+        // Use ChessUtils instead of manual switch statements
+        auto [row, col] = ChessUtils::squareToCoords(enPassant);
+        enPassantR = row;
+        enPassantC = col;
+    }
+
     int index = __builtin_ctzll(pawn);
 
     for (int i = index; i < 64; i++)
@@ -290,6 +249,10 @@ std::vector<Move> MoveGenerator::GenerateBlackPawnMoves()
             {
                 legalMoves.push_back(Move('p', 'Y', 0, i / 8, i % 8, (i / 8) - 1, (i % 8) - 1));
             }
+            else if (enPassantR == (i / 8) - 1 && enPassantC == (i % 8) - 1)
+            {
+                legalMoves.push_back(Move('p', 'Y', 0, i / 8, i % 8, (i / 8) - 1, (i % 8) - 1, true));
+            }
         }
 
         if ((i % 8) != 7)
@@ -299,6 +262,10 @@ std::vector<Move> MoveGenerator::GenerateBlackPawnMoves()
             if (takeLeft & WhitePieces)
             {
                 legalMoves.push_back(Move('p', 'Y', 0, i / 8, i % 8, (i / 8) - 1, (i % 8) + 1));
+            }
+            else if (enPassantR == (i / 8) - 1 && enPassantC == (i % 8) + 1)
+            {
+                legalMoves.push_back(Move('p', 'Y', 0, i / 8, i % 8, (i / 8) - 1, (i % 8) + 1, true));
             }
         }
 
